@@ -29,20 +29,29 @@ def full_string_to_card_strings(full_str:str)->list[str]:
     """
     10s7cQh2cAh -> [10s,7c,Qh,2c,Ah]
     """
-    print("full_string_to_card_strings function running")
     if not full_str: 
-        raise TypeError(f"Invalid full_str:{full_str}")
+        raise ValueError(f"Invalid full_str:{full_str}")
     if not isinstance(full_str,str): 
-        raise TypeError(f"full_str:{full_str} must be a string")
-    print("full_str",full_str)
-    suits = suits_dict.keys()
-    print('suits',suits)
-    pattern = rf"[hcsd]"
+        raise TypeError(f"full_str:{full_str} must be a string got {type(full_str)}")
+    
+    #regex pattern validation
+    values_group = "|".join(values_dict.keys())
+    print('values_group',values_group)
+    suits_group = "".join(suits_dict.keys())
+    print('suits_group',suits_group)
+
+    validation_pattern = rf"^(({values_group})([{suits_group}]))+$"
+    if not re.fullmatch(validation_pattern,full_str): 
+        raise ValueError(f"Invalid card sequence '{full_str}'. Expected one or more cards in the form rank+suit like 'AhKd10s'")
+
+
+    pattern = rf"[{suits_group}]"
+
+
     matches = re.finditer(pattern,full_str)
 
     indexes_suits = [m.start() for m in matches]
     indexes_suits = [-1] + indexes_suits
-    print('indexes_suits: ',indexes_suits)
     card_strings = []
     for i in range(0,len(indexes_suits)-1): 
         card_str = full_str[indexes_suits[i]+1:indexes_suits[i+1]+1]
