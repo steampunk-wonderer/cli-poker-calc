@@ -1,10 +1,10 @@
 """
 Finds the combinations
 """
-from app.models import Suit,Card
+from app.models import Suit,Card,CardCollection
 
-def find_pairs(community_cards:list[Card],hand:list[Card]):
+def find_pairs(community_cards:CardCollection,hand:CardCollection):
     pass
 
-def hand_evaluator(community_cards:list[Card],hand:list[Card]): 
-     pass 
+def hand_evaluator(community_cards:CardCollection,hand:CardCollection): 
+    pass 
