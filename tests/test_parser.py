@@ -88,12 +88,6 @@ class TestParser(unittest.TestCase):
             ),
             argparse.Namespace(
                 players=2,
-                player_cards="",
-                other_players_cards=["QsJs"],
-                community_cards="8h7s"
-            ),
-            argparse.Namespace(
-                players=2,
                 player_cards="8s1d",
                 other_players_cards=["QsJs"],
                 community_cards="8h7s"

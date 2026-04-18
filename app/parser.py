@@ -36,7 +36,8 @@ def full_string_to_card_strings(full_str:str,no_duplicates=True)->list[str]:
     full_str = full_str.replace(" ","")
 
     if not full_str: 
-        raise ValueError(f"Invalid full_str:{full_str}")
+        # raise ValueError(f"Invalid full_str:{full_str}")
+        return []
     if not isinstance(full_str,str): 
         raise TypeError(f"full_str:{full_str} must be a string got {type(full_str)}")
     
@@ -81,9 +82,10 @@ def card_string_to_single_Card(card_string:str)->Card:
     return Card(values_dict[value_str],suits_dict[suit_str])
      
 def parse_game_input(args:argparse.Namespace): 
-    print("-----------------------------")
-    print("-----------------------------")
-    print("inside the parse_game_input function")
+    """
+    return
+    {'player_cards': [Card: suit=Suit.SPADES value=7], 'other_players_cards': [[Card: suit=Suit.SPADES value=12, Card: suit=Suit.SPADES value=11], [Card: suit=Suit.SPADES value=13]], 'community_cards': [Card: suit=Suit.CLUBS value=11, Card: suit=Suit.HEARTS value=10]}
+    """
     players = args.players
     if not players: 
         raise ValueError("must provide number of players")
@@ -92,20 +94,19 @@ def parse_game_input(args:argparse.Namespace):
     #CHECKS FOR STRING ARE IN full_string_to_card_strings
     player_cards = args.player_cards
     other_players_cards = args.other_players_cards
-    print("other players cards: ",other_players_cards)
     community_cards = args.community_cards
     duplicate_cards = []
     #-----------------------------------------------#
     #PLAYER CARDS
     player_cards_list = full_string_to_card_strings(player_cards)
-    if len(player_cards_list) > 2 : 
-        raise ValueError("number of player cards cannot exceed 2")
+    if len(player_cards_list) > 2 or len(player_cards_list) == 0 : 
+        raise ValueError("number of player cards cannot exceed 2 or be 0")
     player_cards = []
     for my_str in player_cards_list:
         local_card = card_string_to_single_Card(my_str)
         for duplicate in duplicate_cards: 
             if duplicate == local_card:
-                raise ValueError("duplicate card")
+                raise ValueError(f"duplicate card {duplicate}")
         duplicate_cards.append(local_card)
         player_cards.append(local_card)
 
@@ -117,26 +118,36 @@ def parse_game_input(args:argparse.Namespace):
         single_player_cards = full_string_to_card_strings(cards)
         if len(single_player_cards) > 2:
             raise ValueError("a player can have max 2 cards")
-        print('single player cards:',single_player_cards)
         for card in single_player_cards:
             local_card = card_string_to_single_Card(card)
             for duplicate in duplicate_cards: 
                 if duplicate == local_card:
-                    raise ValueError("duplicate card")
+                    raise ValueError(f"duplicate card {duplicate}")
             duplicate_cards.append(local_card)
             temp_player_cards.append(local_card)
-            print("temp player cards",temp_player_cards)
         other_players_cards_list.append(temp_player_cards)
     #-----------------------------------------------#
     #COMMUNITY CARDS 
-    print('------------------------')
-    print('------------------------')
-    print('------------------------')
-    print('community cards',community_cards)
     community_cards = full_string_to_card_strings(community_cards)
-    print('community cards: ',community_cards)
+    community_cards_list = []
     if len(community_cards) > 5: 
         raise ValueError("community cards number must be up to 5")
+    for card in community_cards: 
+        local_card = card_string_to_single_Card(card)
+        for duplicate in duplicate_cards:
+            if duplicate == local_card:
+                raise ValueError(f"duplicate card {duplicate}")
+        duplicate_cards.append(local_card)
+        community_cards_list.append(local_card)
+
+    if len(other_players_cards_list) != players-1: 
+        raise ValueError("missmatch between total players and player cards")
+    parsed = { 
+        "player_cards":player_cards,
+        "other_players_cards":other_players_cards_list,
+        "community_cards":community_cards_list
+    }
+    return parsed
 
 
     

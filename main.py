@@ -17,10 +17,10 @@ def main():
     # parse_game_input(args)
 
     test_case = argparse.Namespace(
-                players=2,
+                players=3,
                 player_cards="7s",
                 other_players_cards=["QsJs","Ks"],
-                community_cards="8h7s7h7h"
+                community_cards="Jc10h"
             )
     parse_game_input(test_case)
 
