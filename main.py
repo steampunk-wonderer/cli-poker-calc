@@ -14,15 +14,9 @@ def main():
     parser.add_argument("--community_cards",type=str,default=None)
     args = parser.parse_args() #parse
 
-    # parse_game_input(args)
-
-    test_case = argparse.Namespace(
-                players=3,
-                player_cards="7s",
-                other_players_cards=["QsJs","Ks"],
-                community_cards="Jc10h"
-            )
-    parse_game_input(test_case)
+    parsed = parse_game_input(args)
+    print("parsed: ",parsed)
+    print("-----------------------")
 
 
     #-----------------------------------------------#

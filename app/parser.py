@@ -1,5 +1,5 @@
 import argparse
-from app.models import Suit,Card
+from app.models import Suit,Card,CardCollection
 import re
 
 values_dict = { 
@@ -143,9 +143,9 @@ def parse_game_input(args:argparse.Namespace):
     if len(other_players_cards_list) != players-1: 
         raise ValueError("missmatch between total players and player cards")
     parsed = { 
-        "player_cards":player_cards,
-        "other_players_cards":other_players_cards_list,
-        "community_cards":community_cards_list
+        "player_cards":CardCollection(player_cards),
+        "other_players_cards":[CardCollection(cards) for cards in other_players_cards_list],
+        "community_cards":CardCollection(community_cards_list)
     }
     return parsed
 
