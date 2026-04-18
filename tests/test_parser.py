@@ -1,5 +1,6 @@
 import unittest
-from app.parser import full_string_to_card_strings,card_string_to_single_Card
+import argparse
+from app.parser import full_string_to_card_strings,card_string_to_single_Card,parse_game_input
 from app.models import Suit,Card
 
 class TestParser(unittest.TestCase): 
@@ -23,6 +24,10 @@ class TestParser(unittest.TestCase):
         self.assertListEqual(["5c","4h","Ah","Kd"],full_string_to_card_strings(test_str))
 
         test_str = "5k6h"
+        with self.assertRaises(ValueError):
+            full_string_to_card_strings(test_str)
+        
+        test_str = "5s5dKh5s"
         with self.assertRaises(ValueError):
             full_string_to_card_strings(test_str)
 
@@ -66,6 +71,76 @@ class TestParser(unittest.TestCase):
         for my_str in value_error_strs:
             with self.assertRaises(ValueError):
                 card_string_to_single_Card(my_str)
+
+    def test_parse_game_input_player_cards_errors(self):
+        player_cards_value_error = [ 
+            argparse.Namespace(
+                players=2,
+                player_cards="Ah5d 7s",
+                other_players_cards=["QsJs"],
+                community_cards="8h7s"
+            ),
+            argparse.Namespace(
+                players=2,
+                player_cards="hA5d",
+                other_players_cards=["QsJs"],
+                community_cards="8h7s"
+            ),
+            argparse.Namespace(
+                players=2,
+                player_cards="",
+                other_players_cards=["QsJs"],
+                community_cards="8h7s"
+            ),
+            argparse.Namespace(
+                players=2,
+                player_cards="8s1d",
+                other_players_cards=["QsJs"],
+                community_cards="8h7s"
+            ),
+            argparse.Namespace(
+                players=2,
+                player_cards="17sKh",
+                other_players_cards=["QsJs"],
+                community_cards="8h7s"
+            ),
+            argparse.Namespace(
+                players=2,
+                player_cards="7s7s",
+                other_players_cards=["QsJs"],
+                community_cards="8h7s"
+            )
+        ]
+
+        for i in player_cards_value_error:
+            with self.assertRaises(ValueError):
+                parse_game_input(i)
+    
+    def test_parse_game_input_other_players_cards_errors(self):
+        value_errors = [
+            argparse.Namespace(
+                players=2,
+                player_cards="Ah 7s",
+                other_players_cards=["QsJs","4s6h8"],
+                community_cards="8h7s"
+            ),
+            argparse.Namespace(
+                players=2,
+                player_cards="Ah 7s",
+                other_players_cards=["QsJs","4sJs"],
+                community_cards="8h7s"
+            ),
+            argparse.Namespace(
+                players=2,
+                player_cards="Ah 7s",
+                other_players_cards=["Ah3o"],
+                community_cards="8h7s"
+            ),
+        ]
+        for i in value_errors: 
+            with self.assertRaises(ValueError):
+                parse_game_input(i)
+
 
 
         

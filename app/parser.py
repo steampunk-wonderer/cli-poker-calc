@@ -29,7 +29,7 @@ values_group = "|".join(values_dict.keys())
 suits_group = "".join(suits_dict.keys())
 #############################################################
 #############################################################
-def full_string_to_card_strings(full_str:str)->list[str]:
+def full_string_to_card_strings(full_str:str,no_duplicates=True)->list[str]:
     """
     10s7cQh2cAh -> [10s,7c,Qh,2c,Ah]
     """
@@ -43,7 +43,7 @@ def full_string_to_card_strings(full_str:str)->list[str]:
     #regex pattern validation
     validation_pattern = rf"^(({values_group})([{suits_group}]))+$"
     if not re.fullmatch(validation_pattern,full_str): 
-        raise ValueError(f"Invalid card sequence '{full_str}'. Expected one or more cards in the form rank+suit like 'AhKd10s'")
+        raise ValueError(f"Invalid card sequence '{full_str}'. Expected one or more cards in the form rank+suit with valid ranks and suits like 'AhKd10s'")
 
 
     pattern = rf"[{suits_group}]"
@@ -54,7 +54,7 @@ def full_string_to_card_strings(full_str:str)->list[str]:
     card_strings = []
     for i in range(0,len(indexes_suits)-1): 
         card_str = full_str[indexes_suits[i]+1:indexes_suits[i+1]+1]
-        if card_str in card_strings: 
+        if no_duplicates and card_str in card_strings: 
             raise ValueError("no duplicate cards allowed")
         card_strings.append(card_str)
     
@@ -87,23 +87,65 @@ def parse_game_input(args:argparse.Namespace):
     players = args.players
     if not players: 
         raise ValueError("must provide number of players")
-    if players < 2 or players > 6: 
-        raise ValueError("players must be between and including 2 and 6 ")
+    if players < 1 or players > 6: 
+        raise ValueError("players must be between and including 1 and 6 ")
     #CHECKS FOR STRING ARE IN full_string_to_card_strings
     player_cards = args.player_cards
     other_players_cards = args.other_players_cards
+    print("other players cards: ",other_players_cards)
     community_cards = args.community_cards
-    print("players:",players)
-    print("player_cards:",player_cards)
-    print("other_players_cards:",other_players_cards)
-    print("community_cards:",community_cards)
+    duplicate_cards = []
+    #-----------------------------------------------#
     #PLAYER CARDS
-    print("00000000000000000000000000000000")
-    print('PLAYER CARDS')
     player_cards_list = full_string_to_card_strings(player_cards)
-    print("player cards list",player_cards_list)
     if len(player_cards_list) > 2 : 
         raise ValueError("number of player cards cannot exceed 2")
+    player_cards = []
+    for my_str in player_cards_list:
+        local_card = card_string_to_single_Card(my_str)
+        for duplicate in duplicate_cards: 
+            if duplicate == local_card:
+                raise ValueError("duplicate card")
+        duplicate_cards.append(local_card)
+        player_cards.append(local_card)
+
+    #-----------------------------------------------#
+    #OTHER PLAYER CARDS
+    other_players_cards_list = []
+    for cards in other_players_cards:
+        temp_player_cards = []
+        single_player_cards = full_string_to_card_strings(cards)
+        if len(single_player_cards) > 2:
+            raise ValueError("a player can have max 2 cards")
+        print('single player cards:',single_player_cards)
+        for card in single_player_cards:
+            local_card = card_string_to_single_Card(card)
+            for duplicate in duplicate_cards: 
+                if duplicate == local_card:
+                    raise ValueError("duplicate card")
+            duplicate_cards.append(local_card)
+            temp_player_cards.append(local_card)
+            print("temp player cards",temp_player_cards)
+        other_players_cards_list.append(temp_player_cards)
+    #-----------------------------------------------#
+    #COMMUNITY CARDS 
+    print('------------------------')
+    print('------------------------')
+    print('------------------------')
+    print('community cards',community_cards)
+    community_cards = full_string_to_card_strings(community_cards)
+    print('community cards: ',community_cards)
+    if len(community_cards) > 5: 
+        raise ValueError("community cards number must be up to 5")
+
+
+    
+    #check if total cards are correct for the total players
+    #check if there is a duplicate card somewhere . i have duplicate check for a single string but i have to check across the players,community cards etc ! 
+
+
+
+
     
 
 

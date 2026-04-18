@@ -15,13 +15,18 @@ def main():
     args = parser.parse_args() #parse
 
     # parse_game_input(args)
-    test_str = "Kh "
-    card = card_string_to_single_Card(test_str)
-    print("card : ",card)
+
+    test_case = argparse.Namespace(
+                players=2,
+                player_cards="7s",
+                other_players_cards=["QsJs","Ks"],
+                community_cards="8h7s7h7h"
+            )
+    parse_game_input(test_case)
 
 
     #-----------------------------------------------#
-    #-----------------------------------------------#)
+    #-----------------------------------------------#
 
 if __name__ == "__main__": 
     main()
