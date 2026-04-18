@@ -29,6 +29,9 @@ def full_string_to_card_strings(full_str:str)->list[str]:
     """
     10s7cQh2cAh -> [10s,7c,Qh,2c,Ah]
     """
+    full_str = full_str.replace(" ","")
+
+
     if not full_str: 
         raise ValueError(f"Invalid full_str:{full_str}")
     if not isinstance(full_str,str): 
@@ -55,13 +58,12 @@ def full_string_to_card_strings(full_str:str)->list[str]:
     card_strings = []
     for i in range(0,len(indexes_suits)-1): 
         card_str = full_str[indexes_suits[i]+1:indexes_suits[i+1]+1]
+        if card_str in card_strings: 
+            raise ValueError("no duplicate cards allowed")
         card_strings.append(card_str)
+    
     print(card_strings)
     return card_strings
-
-
-    
-    
 
 def card_string_to_single_Card(card_string:str):
     print("card_string_to_Card function running")
