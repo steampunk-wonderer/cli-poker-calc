@@ -1,4 +1,4 @@
-from app.models import Suit,Card,CardCollection
+from app.models import Suit,Card,CardCollection,Groups
 import sys
 import argparse
 from app.parser import parse_game_input,full_string_to_card_strings,card_string_to_single_Card
@@ -15,20 +15,17 @@ def main():
     args = parser.parse_args() #parse
 
     parsed = parse_game_input(args)
-    print("parsed: ",parsed)
+    # print("parsed: ",parsed)
     print("-----------------------")
-    card_collection = CardCollection([Card(10,Suit.HEARTS),Card(12,Suit.CLUBS)])
+    card_collection = CardCollection([Card(10,Suit.HEARTS),Card(12,Suit.CLUBS),Card(2,Suit.SPADES)])
+    card_collection_2 = CardCollection([Card(11,Suit.SPADES),Card(5,Suit.HEARTS),Card(12,Suit.HEARTS)])
 
-    card_collection_values = card_collection.to_values()
-    print('card collection values:',card_collection_values)
-    # for card in card_collection:
-    #     print('card: ',card)
+    new_card_collection = card_collection + card_collection_2
+    # print("new_card_collection",new_card_collection)
+    result = new_card_collection.find_same_groups(Groups.BY_VALUE)
+    print("result",result)
 
-    # if Card(10,Suit.HEARTS) in card_collection:
-        # print("YES !! ")
 
-    # print('card_collection[1]',card_collection[1])
-    print('len(card_collection)',len(card_collection))
 
     #-----------------------------------------------#
     #-----------------------------------------------#
