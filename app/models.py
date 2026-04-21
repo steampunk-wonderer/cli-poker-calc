@@ -16,14 +16,17 @@ class SortKey(Enum):
     VALUE = 1
 
     
+
+
+    
 class Card: 
     def __init__(self,value:int,suit:Suit)->None:
         if not isinstance(suit,Suit):
-            raise TypeError("suit must be Suit")
+            raise TypeError(f"suit:{suit} must be Suit")
         if value > 14 or value < 2:
-            raise ValueError("value must be from 2-14")
+            raise ValueError(f"value:{value} must be from 2-14")
         if not isinstance(value,int):
-            raise TypeError("value should be an int")
+            raise TypeError(f"value:{value} should be an int")
         self.suit = suit
         self.value = value
 
@@ -52,40 +55,7 @@ class CardCollection:
     
     def sort_by_value(self,reverse=False):
         return CardCollection(sorted(self.cards,key=lambda x:x.value,reverse=reverse))
-    
-    def find_sequences(self):
-        sorted_cards = self.sort_by_value()
-        results = []
-        found = []
-        for i,card in enumerate(sorted_cards):
-            if card in found:
-                continue
-            real_length = 1
-            found.append(card)
-            temp = [card]
-            value = card.value
-            for other_card in sorted_cards[i+1:]:
-                if other_card.value == value + 1 or other_card.value == value:
-                    found.append(other_card)
-                    temp.append(other_card)
-                    if other_card.value == value + 1:
-                        real_length += 1
-                        value += 1 
-                else: 
-                    break
-            if real_length >= 5:
-                results.append(temp)
-        return results
-            
-            
 
-            
-
-
-
-
-
-    
     def _find_groups_by_key(self,key_func):
         found = []
         pairs = []
@@ -107,8 +77,80 @@ class CardCollection:
     def find_value_groups(self):
         return self._find_groups_by_key(lambda x:x.value)
     
+
     def find_suit_groups(self):
         return self._find_groups_by_key(lambda x:x.suit)
+
+    def find_sequences(self)->list[list[Card]]:
+        sorted_cards = self.sort_by_value()
+        results = []
+        found = []
+        for i,card in enumerate(sorted_cards):
+            if card in found:
+                continue
+            real_length = 1
+            found.append(card)
+            temp = [card]
+            value = card.value
+            for other_card in sorted_cards[i+1:]:
+                if other_card.value == value + 1 or other_card.value == value:
+                    found.append(other_card)
+                    temp.append(other_card)
+                    if other_card.value == value + 1:
+                        real_length += 1
+                        value += 1 
+                else: 
+                    break
+            if real_length >= 5:
+                results.append(CardCollection(temp))
+        return results
+
+    
+    def find_best_hand(self):
+        groups_suits = self.find_suit_groups()
+        group_values = self.find_value_groups()
+        print("group values:",group_values)
+        #----------------------------------------#
+        #STRAIGHT FLUSH
+        straight_flushes = []
+        for group_suit in groups_suits:
+            if len(group_suit) < 5:
+                continue 
+            sequences = group_suit.find_sequences()
+            straight_flushes.extend(sequences)
+        if straight_flushes: 
+            best = straight_flushes[0]
+            high_card = best[-1].value
+            for temp in straight_flushes[1:]:
+                if temp[-1].value > high_card:
+                    best = temp
+                    high_card = best[-1].value
+            print("straight flush!")
+            print('best : ',best)
+        #----------------------------------------#
+        #FOUR OF KIND
+        four_of_kind = []
+        high_card = 0
+        fours_groups = filter_groups(group_values,4)
+        print("fours_groups:",fours_groups)
+        for group in fours_groups:
+            value = group[0].value 
+            if value > high_card:
+                four_of_kind = group
+                high_card = value 
+        if four_of_kind:
+            print("four of kind : ",four_of_kind)
+            print('four of kind !')
+        #----------------------------------------#
+        #FULL HOUSE  
+
+
+
+
+
+        
+    
+
     
     def __getitem__(self, key):
         return self.cards[key]
@@ -134,36 +176,30 @@ class CardCollection:
         return result
     
 
+#FUNCTIONS
+def is_flush(card_list:list[Card])->bool:
+    s = card_list[0].suit
+    print('s',s)
+    for card in card_list[1:]:
+        if card.suit != s:
+            return False
+    return True
 
+def count_suits(card_list:list[Card])->dict[Suit,int]:
+    results = {}
+    for card in card_list:
+        suit = card.suit
+        if suit not in results:
+            results[suit] = 0
+        results[suit] += 1 
+    return results
 
-#     def _find_groups_by_key(self, key_func):
-#     found = []
-#     groups = []
+def filter_groups(groups:list["CardCollection"],group_len:int)->list["CardCollection"]:
+    lst = []
+    if groups:
+        for group in groups: 
+            if len(group) == group_len:
+                lst.append(group)
+    return lst 
+    
 
-#     for i, card in enumerate(self):
-#         temp = []
-
-#         if card in found:
-#             continue
-
-#         found.append(card)
-
-#         for other_card in self[i + 1:]:
-#             if key_func(card) == key_func(other_card):
-#                 if card not in temp:
-#                     temp.append(card)
-#                 temp.append(other_card)
-#                 found.append(other_card)
-
-#         if temp:
-#             groups.append(CardCollection(temp))
-
-#     return groups
-
-
-# def find_value_groups(self):
-#     return self._find_groups_by_key(lambda card: card.value)
-
-
-# def find_suit_groups(self):
-#     return self._find_groups_by_key(lambda card: card.suit)

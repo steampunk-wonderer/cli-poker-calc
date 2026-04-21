@@ -19,20 +19,75 @@ def main():
     print("-----------------------")
     card_collection = CardCollection([Card(10,Suit.HEARTS),Card(12,Suit.CLUBS),Card(2,Suit.SPADES)])
     card_collection_2 = CardCollection([Card(11,Suit.SPADES),Card(5,Suit.HEARTS),Card(12,Suit.HEARTS)])
+    card_collection_3 = CardCollection([Card(9,Suit.HEARTS),Card(8,Suit.HEARTS),])
 
-    new_card_collection = card_collection + card_collection_2
+    new_card_collection = card_collection + card_collection_2 + card_collection_3
     # print("new_card_collection",new_card_collection)
-    # sequences = new_card_collection.find_sequences()
-    # print("sequences: ",sequences)
-    test_card_collection = CardCollection([
-            Card(5,Suit.HEARTS),
-            Card(6,Suit.HEARTS),
-            Card(8,Suit.CLUBS),
-            Card(9,Suit.HEARTS),
-            Card(7,Suit.HEARTS),]
-        )
-    print("sortedddd: ",test_card_collection.find_sequences())
+    sequences = new_card_collection.find_sequences()
+    # new_card_collection.find_best_hand()
 
+    clean_straight_flush = CardCollection([
+    Card(5,Suit.HEARTS),
+    Card(6,Suit.HEARTS),
+    Card(7,Suit.HEARTS),
+    Card(8,Suit.HEARTS),
+    Card(9,Suit.HEARTS),
+])
+    extra_irrelevant_cards = CardCollection([
+    Card(5,Suit.HEARTS),
+    Card(6,Suit.HEARTS),
+    Card(7,Suit.HEARTS),
+    Card(8,Suit.HEARTS),
+    Card(9,Suit.HEARTS),
+    Card(2,Suit.CLUBS),
+    Card(14,Suit.SPADES),
+    Card(11,Suit.DIAMONDS),
+])
+    
+    larger_flush = CardCollection([
+    Card(4,Suit.SPADES),
+    Card(5,Suit.SPADES),
+    Card(6,Suit.SPADES),
+    Card(7,Suit.SPADES),
+    Card(8,Suit.SPADES),
+    Card(9,Suit.SPADES),
+    Card(10,Suit.SPADES),
+])
+    
+    other_suits_too = CardCollection([
+    Card(3,Suit.HEARTS),
+    Card(4,Suit.HEARTS),
+    Card(4,Suit.CLUBS),
+    Card(5,Suit.HEARTS),
+    Card(6,Suit.HEARTS),
+    Card(7,Suit.HEARTS),
+
+    Card(9,Suit.DIAMONDS),
+    Card(10,Suit.DIAMONDS),
+    Card(11,Suit.DIAMONDS),
+    Card(12,Suit.DIAMONDS),
+    Card(13,Suit.DIAMONDS),
+])
+    
+    four_of_kind = CardCollection([
+                Card(5,Suit.HEARTS),
+        Card(5,Suit.DIAMONDS),
+        Card(5,Suit.SPADES),
+        Card(5,Suit.CLUBS),
+        Card(13,Suit.DIAMONDS),
+        Card(4,Suit.HEARTS),
+        Card(4,Suit.DIAMONDS),
+        Card(4,Suit.CLUBS),
+        Card(4,Suit.SPADES),
+        Card(7,Suit.HEARTS),
+
+
+    ])
+    
+    other_suits_too.find_best_hand()
+    # print(other_suits_too.find_sequences())
+
+    
     #-----------------------------------------------#
     #-----------------------------------------------#
 
