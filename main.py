@@ -83,8 +83,22 @@ def main():
 
 
     ])
+
+    full_house = CardCollection([
+                Card(5,Suit.HEARTS),
+        Card(5,Suit.SPADES),
+        Card(5,Suit.CLUBS),
+        Card(13,Suit.DIAMONDS),
+        Card(4,Suit.HEARTS),
+        Card(4,Suit.CLUBS),
+        Card(4,Suit.SPADES),
+        Card(7,Suit.HEARTS),
+
+
+    ])
+
     
-    other_suits_too.find_best_hand()
+    four_of_kind.find_best_hand()
     # print(other_suits_too.find_sequences())
 
     

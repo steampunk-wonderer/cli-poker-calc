@@ -109,6 +109,10 @@ class CardCollection:
     def find_best_hand(self):
         groups_suits = self.find_suit_groups()
         group_values = self.find_value_groups()
+        fours_groups = filter_groups(group_values,4)
+        threes_groups = filter_groups(group_values,3)
+        twos_groups = filter_groups(group_values,2)
+
         print("group values:",group_values)
         #----------------------------------------#
         #STRAIGHT FLUSH
@@ -119,30 +123,36 @@ class CardCollection:
             sequences = group_suit.find_sequences()
             straight_flushes.extend(sequences)
         if straight_flushes: 
-            best = straight_flushes[0]
-            high_card = best[-1].value
-            for temp in straight_flushes[1:]:
-                if temp[-1].value > high_card:
-                    best = temp
-                    high_card = best[-1].value
+            best = max(straight_flushes,key=lambda x:max(y.value for y in x))
+            # best = straight_flushes[0]
+            # high_card = best[-1].value
+            # for temp in straight_flushes[1:]:
+            #     if temp[-1].value > high_card:
+            #         best = temp
+            #         high_card = best[-1].value
             print("straight flush!")
             print('best : ',best)
         #----------------------------------------#
         #FOUR OF KIND
         four_of_kind = []
-        high_card = 0
-        fours_groups = filter_groups(group_values,4)
-        print("fours_groups:",fours_groups)
-        for group in fours_groups:
-            value = group[0].value 
-            if value > high_card:
-                four_of_kind = group
-                high_card = value 
-        if four_of_kind:
+        if fours_groups:
+            four_of_kind.append(max(fours_groups,key=lambda x:x[0].value))
             print("four of kind : ",four_of_kind)
             print('four of kind !')
         #----------------------------------------#
         #FULL HOUSE  
+        condition_1 = threes_groups and twos_groups
+        condition_2 = len(threes_groups) >= 2 
+        if  condition_1 or condition_2:
+            print("full house !")
+            full_house = []
+            if condition_1:
+                full_house.append(threes_groups[0]) # can only have one because max cards are 7
+                best_two = twos_groups[0]
+                
+
+
+
 
 
 
