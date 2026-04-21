@@ -22,10 +22,16 @@ def main():
 
     new_card_collection = card_collection + card_collection_2
     # print("new_card_collection",new_card_collection)
-    result = new_card_collection.find_same_groups(Groups.BY_VALUE)
-    print("result",result)
-
-
+    # sequences = new_card_collection.find_sequences()
+    # print("sequences: ",sequences)
+    test_card_collection = CardCollection([
+            Card(5,Suit.HEARTS),
+            Card(6,Suit.HEARTS),
+            Card(8,Suit.CLUBS),
+            Card(9,Suit.HEARTS),
+            Card(7,Suit.HEARTS),]
+        )
+    print("sortedddd: ",test_card_collection.find_sequences())
 
     #-----------------------------------------------#
     #-----------------------------------------------#

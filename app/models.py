@@ -9,6 +9,12 @@ class Suit(Enum):
 class Groups(Enum):
     BY_VALUE = 0
     BY_SUIT = 1
+    BY_SEQUENCE = 2
+
+class SortKey(Enum):
+    SUIT = 0
+    VALUE = 1
+
     
 class Card: 
     def __init__(self,value:int,suit:Suit)->None:
@@ -44,9 +50,43 @@ class CardCollection:
     def to_suits(self):
         return [card.suit for card in self.cards]
     
-    def find_same_groups(self,group:Groups):
-        if not isinstance(group,Groups):
-            raise TypeError(f"group must be an instance of Groups class.Got {type(group)}")
+    def sort_by_value(self,reverse=False):
+        return CardCollection(sorted(self.cards,key=lambda x:x.value,reverse=reverse))
+    
+    def find_sequences(self):
+        sorted_cards = self.sort_by_value()
+        results = []
+        found = []
+        for i,card in enumerate(sorted_cards):
+            if card in found:
+                continue
+            real_length = 1
+            found.append(card)
+            temp = [card]
+            value = card.value
+            for other_card in sorted_cards[i+1:]:
+                if other_card.value == value + 1 or other_card.value == value:
+                    found.append(other_card)
+                    temp.append(other_card)
+                    if other_card.value == value + 1:
+                        real_length += 1
+                        value += 1 
+                else: 
+                    break
+            if real_length >= 5:
+                results.append(temp)
+        return results
+            
+            
+
+            
+
+
+
+
+
+    
+    def _find_groups_by_key(self,key_func):
         found = []
         pairs = []
         for i,card in enumerate(self):
@@ -55,13 +95,7 @@ class CardCollection:
                 continue
             found.append(card)
             for other_card in self[i+1:]:
-                condition = False
-                if group == Groups.BY_SUIT:
-                    condition = card.suit == other_card.suit
-                elif group == Groups.BY_VALUE:
-                    condition = card.value == other_card.value
-
-                if condition: 
+                if key_func(card) == key_func(other_card): 
                     if card not in temp:
                         temp.append(card)
                     temp.append(other_card)
@@ -69,14 +103,12 @@ class CardCollection:
             if temp:
                 pairs.append(CardCollection(temp))
         return pairs
- 
     
-    def find_same_value_groups(self):
-        pass
-    def find_same_suit_groups(self):
-        pass 
-
-
+    def find_value_groups(self):
+        return self._find_groups_by_key(lambda x:x.value)
+    
+    def find_suit_groups(self):
+        return self._find_groups_by_key(lambda x:x.suit)
     
     def __getitem__(self, key):
         return self.cards[key]
@@ -100,3 +132,38 @@ class CardCollection:
                 result += ', '
         result += ']'
         return result
+    
+
+
+
+#     def _find_groups_by_key(self, key_func):
+#     found = []
+#     groups = []
+
+#     for i, card in enumerate(self):
+#         temp = []
+
+#         if card in found:
+#             continue
+
+#         found.append(card)
+
+#         for other_card in self[i + 1:]:
+#             if key_func(card) == key_func(other_card):
+#                 if card not in temp:
+#                     temp.append(card)
+#                 temp.append(other_card)
+#                 found.append(other_card)
+
+#         if temp:
+#             groups.append(CardCollection(temp))
+
+#     return groups
+
+
+# def find_value_groups(self):
+#     return self._find_groups_by_key(lambda card: card.value)
+
+
+# def find_suit_groups(self):
+#     return self._find_groups_by_key(lambda card: card.suit)

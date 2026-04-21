@@ -81,7 +81,7 @@ def card_string_to_single_Card(card_string:str)->Card:
     value_str = card_string[:-1]
     return Card(values_dict[value_str],suits_dict[suit_str])
      
-def parse_game_input(args:argparse.Namespace): 
+def parse_game_input(args:argparse.Namespace)->dict[str,CardCollection]: 
     """
     return
     {'player_cards': [Card: suit=Suit.SPADES value=7], 'other_players_cards': [[Card: suit=Suit.SPADES value=12, Card: suit=Suit.SPADES value=11], [Card: suit=Suit.SPADES value=13]], 'community_cards': [Card: suit=Suit.CLUBS value=11, Card: suit=Suit.HEARTS value=10]}
