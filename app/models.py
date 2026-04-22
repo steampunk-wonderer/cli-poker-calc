@@ -1,4 +1,5 @@
 from enum import Enum
+from collections.abc import Callable
 
 class Suit(Enum):
     HEARTS = 0
@@ -107,48 +108,112 @@ class CardCollection:
 
     
     def find_best_hand(self):
+        best_comb = []
         groups_suits = self.find_suit_groups()
         group_values = self.find_value_groups()
-        fours_groups = filter_groups(group_values,4)
-        threes_groups = filter_groups(group_values,3)
-        twos_groups = filter_groups(group_values,2)
+        print("group values",group_values)
+
+        fours_groups = filter_groups(group_values,lambda item:len(item) ,4)
+        print("fours groups",fours_groups)
+        threes_groups = filter_groups(group_values,lambda item:len(item),3)
+        twos_groups = filter_groups(group_values,lambda item:len(item),2)
+        suits_count = count_suits(self)
 
         print("group values:",group_values)
+        print("twos groups",twos_groups)
+        print("threes groups:",threes_groups)
+        print("fours groups",fours_groups)
         #----------------------------------------#
         #STRAIGHT FLUSH
-        straight_flushes = []
         for group_suit in groups_suits:
             if len(group_suit) < 5:
                 continue 
             sequences = group_suit.find_sequences()
-            straight_flushes.extend(sequences)
-        if straight_flushes: 
-            best = max(straight_flushes,key=lambda x:max(y.value for y in x))
-            # best = straight_flushes[0]
-            # high_card = best[-1].value
-            # for temp in straight_flushes[1:]:
-            #     if temp[-1].value > high_card:
-            #         best = temp
-            #         high_card = best[-1].value
+            best_comb.extend(sequences)
+        if best_comb: 
+            best = max(best_comb,key=lambda x:max(y.value for y in x))
             print("straight flush!")
             print('best : ',best)
+            return
         #----------------------------------------#
         #FOUR OF KIND
-        four_of_kind = []
         if fours_groups:
-            four_of_kind.append(max(fours_groups,key=lambda x:x[0].value))
-            print("four of kind : ",four_of_kind)
+            best_comb.append(max(fours_groups,key=lambda x:x[0].value))
+            print("four of kind : ",best_comb)
             print('four of kind !')
+            return
         #----------------------------------------#
         #FULL HOUSE  
         condition_1 = threes_groups and twos_groups
         condition_2 = len(threes_groups) >= 2 
-        if  condition_1 or condition_2:
-            print("full house !")
-            full_house = []
+        if condition_1 or condition_2:
+            print('gjfodhgoasduoghoasghodhoasghuoi')
             if condition_1:
-                full_house.append(threes_groups[0]) # can only have one because max cards are 7
-                best_two = twos_groups[0]
+                print("condition 1 ")
+                best_comb.append(threes_groups[0]) # can only have one threes 
+                best_comb.append(max(twos_groups,key=lambda x:x[0].value))
+            elif condition_2 : 
+                print("condition 2 ")
+                if threes_groups[0][0].value > threes_groups[1][0].value:
+                    best_comb.append(threes_groups[0])
+                    best_comb.append([threes_groups[1][0],threes_groups[1][1]])
+                else:
+                    best_comb.append(threes_groups[1])
+                    best_comb.append([threes_groups[0][0],threes_groups[0][1]])
+            print("full house:",best_comb)
+            return
+        #----------------------------------------#
+        #FLUSH
+        print('self',self)
+        print('suits_count',suits_count)
+        for suit in suits_count:
+            if suits_count[suit] >= 5 : 
+                print("FLUSH")
+                cards_with_suit = filter_groups(self,lambda item:item.suit,suit)
+                print("cards with suits:",cards_with_suit)
+                best_comb.append(sorted(cards_with_suit,key=lambda x:x.value,reverse=True)[:5])
+                print("flush:",best_comb)
+                return 
+        #----------------------------------------#
+        #STRAIGHT
+        sequences = self.find_sequences()
+        print("----------------------")
+        print("sequences:",sequences)
+        if sequences:
+            best_sequence = max(sequences,key=lambda x: max(x,key=lambda y:y.value))
+            # print("best : ",best)
+            filtered = []
+            found_values = []
+            for card in best_sequence:
+                print("card",card)
+                temp_val = card.value 
+                if temp_val not in found_values : 
+                    found_values.append(temp_val)
+                    filtered.append(card)
+            
+            print("filtered: ",filtered)
+            best_comb = filtered[-5:]
+            print("best_comb:",best_comb)
+            return
+        #----------------------------------------#
+        #THREE OF KIND
+        if threes_groups:
+            best_comb = max(threes_groups,key=lambda x:x[0].value) #can have only one . not necessary to use max function. if there were two we would have full house 
+            print("threes :",best_comb)
+            return
+        
+
+
+
+        
+
+
+
+
+
+
+
+            
                 
 
 
@@ -204,12 +269,12 @@ def count_suits(card_list:list[Card])->dict[Suit,int]:
         results[suit] += 1 
     return results
 
-def filter_groups(groups:list["CardCollection"],group_len:int)->list["CardCollection"]:
+def filter_groups(group:list["CardCollection"],key:Callable,value)->list["CardCollection"]:
     lst = []
-    if groups:
-        for group in groups: 
-            if len(group) == group_len:
-                lst.append(group)
+    if group:
+        for item in group: 
+            if key(item) == value:
+                lst.append(item)
     return lst 
     
 

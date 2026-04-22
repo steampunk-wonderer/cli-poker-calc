@@ -93,12 +93,36 @@ def main():
         Card(4,Suit.CLUBS),
         Card(4,Suit.SPADES),
         Card(7,Suit.HEARTS),
+    ])
 
+    flush = CardCollection([
+                Card(8,Suit.CLUBS),
+        Card(9,Suit.HEARTS),
+        Card(5,Suit.HEARTS),
+        Card(11,Suit.DIAMONDS),
+        Card(4,Suit.HEARTS),
+        Card(3,Suit.HEARTS),
+        Card(12,Suit.CLUBS),
+        Card(5,Suit.SPADES),
+        Card(6,Suit.SPADES),
+        Card(7,Suit.SPADES),
+        Card(10,Suit.SPADES),
+    ])
 
+    three_of_kind = CardCollection([
+                Card(8,Suit.CLUBS),
+        Card(9,Suit.HEARTS),
+        Card(8,Suit.HEARTS),
+        Card(8,Suit.DIAMONDS),
+        Card(9,Suit.SPADES),
+        Card(7,Suit.SPADES),
+        Card(9,Suit.SPADES),
     ])
 
     
-    four_of_kind.find_best_hand()
+
+    
+    three_of_kind.find_best_hand()
     # print(other_suits_too.find_sequences())
 
     
