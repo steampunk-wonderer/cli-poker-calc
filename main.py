@@ -84,7 +84,16 @@ def main():
 
     ])
 
-    full_house = CardCollection([
+    full_house_1 = CardCollection([
+                Card(5,Suit.HEARTS),
+        Card(5,Suit.SPADES),
+        Card(5,Suit.CLUBS),
+        Card(13,Suit.DIAMONDS),
+        Card(4,Suit.HEARTS),
+        Card(4,Suit.SPADES),
+        Card(7,Suit.HEARTS),
+    ])
+    full_house_2 = CardCollection([
                 Card(5,Suit.HEARTS),
         Card(5,Suit.SPADES),
         Card(5,Suit.CLUBS),
@@ -102,27 +111,68 @@ def main():
         Card(11,Suit.DIAMONDS),
         Card(4,Suit.HEARTS),
         Card(3,Suit.HEARTS),
+        Card(4,Suit.HEARTS),
         Card(12,Suit.CLUBS),
-        Card(5,Suit.SPADES),
-        Card(6,Suit.SPADES),
-        Card(7,Suit.SPADES),
-        Card(10,Suit.SPADES),
     ])
+    
+    straight = CardCollection([
+                Card(8,Suit.CLUBS),
+        Card(9,Suit.HEARTS),
+        Card(10,Suit.HEARTS),
+        Card(11,Suit.HEARTS),
+        Card(12,Suit.CLUBS),
+        Card(13,Suit.CLUBS),
+        Card(2,Suit.CLUBS),
+    ])
+    
 
     three_of_kind = CardCollection([
                 Card(8,Suit.CLUBS),
         Card(9,Suit.HEARTS),
         Card(8,Suit.HEARTS),
         Card(8,Suit.DIAMONDS),
-        Card(9,Suit.SPADES),
+        Card(10,Suit.SPADES),
         Card(7,Suit.SPADES),
-        Card(9,Suit.SPADES),
+        Card(12,Suit.SPADES),
     ])
 
+    two_pairs = CardCollection([
+                Card(8,Suit.CLUBS),
+        Card(9,Suit.SPADES),
+        Card(8,Suit.HEARTS),
+        Card(9,Suit.HEARTS),
+        Card(10,Suit.HEARTS),
+        Card(2,Suit.SPADES),
+        Card(10,Suit.SPADES),
+    ])
+
+    two_pairs_2 = CardCollection([
+                Card(8,Suit.CLUBS),
+        Card(2,Suit.SPADES),
+        Card(8,Suit.HEARTS),
+        Card(9,Suit.HEARTS),
+        Card(10,Suit.HEARTS),
+        Card(3,Suit.SPADES),
+        Card(5,Suit.SPADES),
+    ])
+
+
+
+    high_card = CardCollection([
+                Card(8,Suit.CLUBS),
+        Card(9,Suit.SPADES),
+        Card(11,Suit.HEARTS),
+        Card(3,Suit.HEARTS),
+        Card(2,Suit.SPADES),
+        Card(4,Suit.SPADES),
+    ])
+
+
+
     
 
     
-    three_of_kind.find_best_hand()
+    high_card.find_best_hand()
     # print(other_suits_too.find_sequences())
 
     
