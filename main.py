@@ -153,7 +153,7 @@ def main():
         Card(9,Suit.HEARTS),
         Card(10,Suit.HEARTS),
         Card(3,Suit.SPADES),
-        Card(5,Suit.SPADES),
+        Card(10,Suit.SPADES),
     ])
 
 
@@ -172,7 +172,13 @@ def main():
     
 
     
-    # high_card.find_best_hand()
+    four_of_kind.find_best_hand()
+
+
+
+
+
+
     # print(other_suits_too.find_sequences())
     test_1 = CardCollection([
             Card(5,Suit.HEARTS),
@@ -183,6 +189,10 @@ def main():
         ])
     result = test_1.find_sequences()
     print("result",result)
+
+
+
+
     expected_1 = [CardCollection([
             Card(5,Suit.HEARTS),
             Card(6,Suit.HEARTS),

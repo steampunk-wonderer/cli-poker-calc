@@ -136,14 +136,14 @@ class CardCollection:
             best_comb.extend(sequences)
         if best_comb: 
             best = max(best_comb,key=lambda x:max(y.value for y in x))
-            tiebreakers = tuple(card.value for card in reversed(best))
+            best = list(card for card in reversed(best))[:5]
+            tiebreakers = tuple(card.value for card in best)
             return EvaluatedHand(HandRank.STRAIGHT_FLUSH,best,tiebreakers)
         #----------------------------------------#
         #FOUR OF KIND
         if fours_groups:
             best_comb.append(max(fours_groups,key=lambda x:x[0].value))
-            quad_value = best_comb[0].value
-
+            quad_value = best_comb[0][0].value
             remaining_values = [card.value for card in self if card.value != quad_value]
             kicker = max(remaining_values)
             tiebreakers = (quad_value, kicker)

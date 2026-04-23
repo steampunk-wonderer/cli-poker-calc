@@ -1,5 +1,5 @@
 import unittest
-from app.models import CardCollection,Card,Suit
+from app.models import CardCollection,Card,Suit,HandRank
 
 class TestModels(unittest.TestCase):
     def test_find_sequences(self):
@@ -126,13 +126,219 @@ class TestModels(unittest.TestCase):
         self.assertEqual(result_5, expected_5)
     
     def test_find_best_hand(self):
-        clean_straight_flush = CardCollection([
-            Card(5,Suit.HEARTS),
-            Card(6,Suit.HEARTS),
-            Card(7,Suit.HEARTS),
-            Card(8,Suit.HEARTS),
-            Card(9,Suit.HEARTS),
-        ])
-        print("test result :",clean_straight_flush.find_best_hand())
+        #clean_straight_flush
+        #extra_irrelevant_cards straight flush
+        #larger flush
+        #other_suits_too straight flush
+        #four_of_kind
+        #full_house_1
+        #full_house_2
+        #flush
+        #straight
+        #three of kind
+        #two pairs
+        #two_pairs_2 
+        #high card
+        #single pair
+        card_cases = [
+            CardCollection([
+                Card(5,Suit.HEARTS),
+                Card(6,Suit.HEARTS),
+                Card(7,Suit.HEARTS),
+                Card(8,Suit.HEARTS),
+                Card(9,Suit.HEARTS),
+            ]),
+            CardCollection([
+                Card(5,Suit.HEARTS),
+                Card(6,Suit.HEARTS),
+                Card(7,Suit.HEARTS),
+                Card(8,Suit.HEARTS),
+                Card(9,Suit.HEARTS),
+                Card(2,Suit.CLUBS),
+                Card(14,Suit.SPADES),
+                Card(11,Suit.DIAMONDS),
+            ]),
+            CardCollection([
+                Card(4,Suit.SPADES),
+                Card(5,Suit.SPADES),
+                Card(6,Suit.SPADES),
+                Card(7,Suit.SPADES),
+                Card(8,Suit.SPADES),
+                Card(9,Suit.SPADES),
+                Card(10,Suit.SPADES),
+            ]),
+            CardCollection([
+                Card(3,Suit.HEARTS),
+                Card(4,Suit.HEARTS),
+                Card(4,Suit.CLUBS),
+                Card(5,Suit.HEARTS),
+                Card(6,Suit.HEARTS),
+                Card(7,Suit.HEARTS),
+
+                Card(9,Suit.DIAMONDS),
+                Card(10,Suit.DIAMONDS),
+                Card(11,Suit.DIAMONDS),
+                Card(12,Suit.DIAMONDS),
+                Card(13,Suit.DIAMONDS),
+            ]),
+            CardCollection([
+                Card(5,Suit.HEARTS),
+                Card(5,Suit.DIAMONDS),
+                Card(5,Suit.SPADES),
+                Card(5,Suit.CLUBS),
+                Card(13,Suit.DIAMONDS),
+                Card(4,Suit.HEARTS),
+                Card(4,Suit.DIAMONDS),
+                Card(4,Suit.CLUBS),
+                Card(4,Suit.SPADES),
+                Card(7,Suit.HEARTS),
+            ]),
+            CardCollection([
+                Card(5,Suit.HEARTS),
+                Card(5,Suit.SPADES),
+                Card(5,Suit.CLUBS),
+                Card(13,Suit.DIAMONDS),
+                Card(4,Suit.HEARTS),
+                Card(4,Suit.SPADES),
+                Card(7,Suit.HEARTS),
+            ]),
+            CardCollection([
+                Card(5,Suit.HEARTS),
+                Card(5,Suit.SPADES),
+                Card(5,Suit.CLUBS),
+                Card(13,Suit.DIAMONDS),
+                Card(4,Suit.HEARTS),
+                Card(4,Suit.CLUBS),
+                Card(4,Suit.SPADES),
+                Card(7,Suit.HEARTS),
+            ]),
+            CardCollection([
+                Card(8,Suit.CLUBS),
+                Card(9,Suit.HEARTS),
+                Card(5,Suit.HEARTS),
+                Card(11,Suit.DIAMONDS),
+                Card(4,Suit.HEARTS),
+                Card(3,Suit.HEARTS),
+                Card(4,Suit.HEARTS),
+                Card(12,Suit.CLUBS),
+            ]),
+            CardCollection([
+                Card(8,Suit.CLUBS),
+                Card(9,Suit.HEARTS),
+                Card(10,Suit.HEARTS),
+                Card(11,Suit.HEARTS),
+                Card(12,Suit.CLUBS),
+                Card(13,Suit.CLUBS),
+                Card(2,Suit.CLUBS),
+            ]),
+            CardCollection([
+                Card(8,Suit.CLUBS),
+                Card(9,Suit.HEARTS),
+                Card(8,Suit.HEARTS),
+                Card(8,Suit.DIAMONDS),
+                Card(10,Suit.SPADES),
+                Card(7,Suit.SPADES),
+                Card(12,Suit.SPADES),
+            ]),
+            CardCollection([
+                Card(8,Suit.CLUBS),
+                Card(9,Suit.SPADES),
+                Card(8,Suit.HEARTS),
+                Card(9,Suit.HEARTS),
+                Card(10,Suit.HEARTS),
+                Card(2,Suit.SPADES),
+                Card(10,Suit.SPADES),
+            ]),
+            CardCollection([
+                Card(8,Suit.CLUBS),
+                Card(2,Suit.SPADES),
+                Card(8,Suit.HEARTS),
+                Card(9,Suit.HEARTS),
+                Card(10,Suit.HEARTS),
+                Card(3,Suit.SPADES),
+                Card(10,Suit.SPADES),
+            ]),
+            CardCollection([
+                Card(8,Suit.CLUBS),
+                Card(9,Suit.SPADES),
+                Card(11,Suit.HEARTS),
+                Card(3,Suit.HEARTS),
+                Card(2,Suit.SPADES),
+                Card(4,Suit.SPADES),
+            ]),
+            CardCollection([
+                Card(8,Suit.CLUBS),
+                Card(9,Suit.SPADES),
+                Card(11,Suit.HEARTS),
+                Card(3,Suit.HEARTS),
+                Card(2,Suit.SPADES),
+                Card(11,Suit.SPADES),
+            ])
+        ]
+        correct_results = [
+            {
+                "rank":HandRank.STRAIGHT_FLUSH,
+                "tiebreakers":(9,8,7,6,5)
+            },
+            {
+                "rank":HandRank.STRAIGHT_FLUSH,
+                "tiebreakers":(9,8,7,6,5)
+            },
+            {
+                "rank":HandRank.STRAIGHT_FLUSH,
+                "tiebreakers":(10,9,8,7,6)
+            },
+            {
+                "rank":HandRank.STRAIGHT_FLUSH,
+                "tiebreakers":(13,12,11,10,9)
+            },
+            {
+                "rank":HandRank.FOUR_OF_A_KIND,
+                "tiebreakers":(5,13)
+            },
+            {
+                "rank":HandRank.FULL_HOUSE,
+                "tiebreakers":(5,4)
+            },
+            {
+                "rank":HandRank.FULL_HOUSE,
+                "tiebreakers":(5,4)
+            },
+            {
+                "rank":HandRank.FLUSH,
+                "tiebreakers":(9,5,4,4,3)
+            },
+            {
+                "rank":HandRank.STRAIGHT,
+                "tiebreakers":(13,12,11,10,9)
+            },
+            {
+                "rank":HandRank.THREE_OF_A_KIND,
+                "tiebreakers":(8,12,10)
+            },
+            {
+                "rank":HandRank.TWO_PAIR,
+                "tiebreakers":(10,9,8)
+            },
+            {
+                "rank":HandRank.TWO_PAIR,
+                "tiebreakers": (10,8,9)
+            },
+            {
+                "rank":HandRank.HIGH_CARD,
+                "tiebreakers":(11,9,8,4,3)
+            },
+            {
+                "rank":HandRank.PAIR,
+                "tiebreakers":(11,9,8,3)
+            }
+        ]
+        #----------------------------------------#
+        for i,card_case in enumerate(card_cases): 
+            result = card_case.find_best_hand()
+            self.assertEqual(result.rank,correct_results[i]["rank"])
+            self.assertEqual(result.tiebreakers,correct_results[i]["tiebreakers"])
+        #----------------------------------------#
+
         
         
