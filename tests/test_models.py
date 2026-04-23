@@ -15,13 +15,13 @@ class TestModels(unittest.TestCase):
 
         result_1 = test_1.find_sequences()
 
-        expected_1 = [[
+        expected_1 = [CardCollection([
             Card(5,Suit.HEARTS),
             Card(6,Suit.HEARTS),
             Card(7,Suit.HEARTS),
             Card(8,Suit.CLUBS),
             Card(9,Suit.HEARTS),
-        ]]
+        ])]
 
         self.assertEqual(result_1, expected_1)
 
@@ -46,7 +46,7 @@ class TestModels(unittest.TestCase):
 
         result_2 = test_2.find_sequences()
 
-        expected_2 = [[
+        expected_2 = [CardCollection([
             Card(2,Suit.HEARTS),
             Card(3,Suit.CLUBS),
             Card(4,Suit.HEARTS),
@@ -59,7 +59,7 @@ class TestModels(unittest.TestCase):
             Card(9,Suit.HEARTS),
             Card(10,Suit.CLUBS),
             Card(11,Suit.SPADES),
-        ]]
+        ])]
 
         self.assertEqual(result_2, expected_2)
 
@@ -79,14 +79,14 @@ class TestModels(unittest.TestCase):
 
         result_3 = test_3.find_sequences()
 
-        expected_3 = [[
+        expected_3 = [CardCollection([
             Card(9,Suit.CLUBS),
             Card(9,Suit.HEARTS),
             Card(10,Suit.HEARTS),
             Card(11,Suit.HEARTS),
             Card(12,Suit.HEARTS),
             Card(13,Suit.HEARTS),
-        ]]
+        ])]
 
         self.assertEqual(result_3, expected_3)
 
@@ -115,13 +115,24 @@ class TestModels(unittest.TestCase):
 
         result_5 = test_5.find_sequences()
 
-        expected_5 = [[
+        expected_5 = [CardCollection([
             Card(6,Suit.CLUBS),
             Card(7,Suit.DIAMONDS),
             Card(8,Suit.HEARTS),
             Card(9,Suit.SPADES),
             Card(10,Suit.HEARTS),
-        ]]
+        ])]
 
         self.assertEqual(result_5, expected_5)
+    
+    def test_find_best_hand(self):
+        clean_straight_flush = CardCollection([
+            Card(5,Suit.HEARTS),
+            Card(6,Suit.HEARTS),
+            Card(7,Suit.HEARTS),
+            Card(8,Suit.HEARTS),
+            Card(9,Suit.HEARTS),
+        ])
+        print("test result :",clean_straight_flush.find_best_hand())
+        
         

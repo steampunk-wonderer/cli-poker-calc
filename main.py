@@ -172,9 +172,43 @@ def main():
     
 
     
-    high_card.find_best_hand()
+    # high_card.find_best_hand()
     # print(other_suits_too.find_sequences())
-
+    test_1 = CardCollection([
+            Card(5,Suit.HEARTS),
+            Card(6,Suit.HEARTS),
+            Card(8,Suit.CLUBS),
+            Card(9,Suit.HEARTS),
+            Card(7,Suit.HEARTS),
+        ])
+    result = test_1.find_sequences()
+    print("result",result)
+    expected_1 = [CardCollection([
+            Card(5,Suit.HEARTS),
+            Card(6,Suit.HEARTS),
+            Card(7,Suit.HEARTS),
+            Card(8,Suit.CLUBS),
+            Card(9,Suit.HEARTS),
+        ])]
+    
+    test_1 = [CardCollection([
+            Card(5,Suit.HEARTS),
+            Card(6,Suit.HEARTS),
+            Card(7,Suit.CLUBS),
+            Card(8,Suit.HEARTS),
+            Card(9,Suit.HEARTS),
+        ])]
+    
+    expected_1 = [CardCollection([
+            Card(5,Suit.HEARTS),
+            Card(6,Suit.HEARTS),
+            Card(7,Suit.CLUBS),
+            Card(8,Suit.HEARTS),
+            Card(9,Suit.HEARTS),
+        ])]
+    
+    print(test_1 == expected_1)
+    
     
     #-----------------------------------------------#
     #-----------------------------------------------#

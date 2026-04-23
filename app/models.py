@@ -88,7 +88,6 @@ class CardCollection:
     
     def find_value_groups(self):
         return self._find_groups_by_key(lambda x:x.value)
-    
 
     def find_suit_groups(self):
         return self._find_groups_by_key(lambda x:x.suit)
@@ -117,24 +116,17 @@ class CardCollection:
                 results.append(CardCollection(temp))
         return results
 
-    
     def find_best_hand(self):
         best_comb = []
         groups_suits = self.find_suit_groups()
         group_values = self.find_value_groups()
-        print("group values",group_values)
 
         fours_groups = filter_groups(group_values,lambda item:len(item) ,4)
-        print("fours groups",fours_groups)
         threes_groups = filter_groups(group_values,lambda item:len(item),3)
         twos_groups = filter_groups(group_values,lambda item:len(item),2)
         suits_count = count_suits(self)
         tiebreakers = tuple()
 
-        print("group values:",group_values)
-        print("twos groups",twos_groups)
-        print("threes groups:",threes_groups)
-        print("fours groups",fours_groups)
         #----------------------------------------#
         #STRAIGHT FLUSH
         for group_suit in groups_suits:
@@ -144,39 +136,28 @@ class CardCollection:
             best_comb.extend(sequences)
         if best_comb: 
             best = max(best_comb,key=lambda x:max(y.value for y in x))
-            print("straight flush!")
-            print('best : ',best)
             tiebreakers = tuple(card.value for card in reversed(best))
-            print("tiebreakers:",tiebreakers)
             return EvaluatedHand(HandRank.STRAIGHT_FLUSH,best,tiebreakers)
         #----------------------------------------#
         #FOUR OF KIND
         if fours_groups:
             best_comb.append(max(fours_groups,key=lambda x:x[0].value))
-            print("four of kind : ",best_comb)
-            print('four of kind !')
             quad_value = best_comb[0].value
 
             remaining_values = [card.value for card in self if card.value != quad_value]
             kicker = max(remaining_values)
-
             tiebreakers = (quad_value, kicker)
-
             return EvaluatedHand(HandRank.FOUR_OF_A_KIND,best_comb,tiebreakers)
         #----------------------------------------#
         #FULL HOUSE  
         condition_1 = threes_groups and twos_groups
         condition_2 = len(threes_groups) >= 2 
         if condition_1 or condition_2:
-            print('gjfodhgoasduoghoasghodhoasghuoi')
             if condition_1:
-                print("condition 1 ")
                 best_comb.append(threes_groups[0]) # can only have one threes 
                 best_comb.append(max(twos_groups,key=lambda x:x[0].value))
                 
-                print("tiebreakers : ",tiebreakers)
             elif condition_2 : 
-                print("condition 2 ")
                 if threes_groups[0][0].value > threes_groups[1][0].value:
                     best_comb.append(threes_groups[0])
                     best_comb.append([threes_groups[1][0],threes_groups[1][1]])
@@ -185,102 +166,66 @@ class CardCollection:
                     best_comb.append([threes_groups[0][0],threes_groups[0][1]])
             tiebreakers = (best_comb[0][0].value,best_comb[1][0].value)   
 
-            print("full house:",best_comb)
-            print('evaluated',EvaluatedHand(HandRank.FULL_HOUSE,best_comb,tiebreakers))
             return EvaluatedHand(HandRank.FULL_HOUSE,best_comb,tiebreakers)
         #----------------------------------------#
         #FLUSH
-        print('self',self)
-        print('suits_count',suits_count)
         for suit in suits_count:
             if suits_count[suit] >= 5 : 
-                print("FLUSH")
                 cards_with_suit = filter_groups(self,lambda item:item.suit,suit)
-                print("cards with suits:",cards_with_suit)
                 best_comb = sorted(cards_with_suit,key=lambda x:x.value,reverse=True)[:5]
-                print("flush:",best_comb)
                 tiebreakers = tuple(card.value for card in best_comb)
-                print("tiebreakers",tiebreakers)
                 return EvaluatedHand(HandRank.FLUSH,best_comb,tiebreakers)
 
         #----------------------------------------#
         #STRAIGHT
         sequences = self.find_sequences()
-        print("----------------------")
-        print("sequences:",sequences)
         if sequences:
             best_sequence = max(sequences,key=lambda x: max(x,key=lambda y:y.value))
-            # print("best : ",best)
             filtered = []
             found_values = []
             for card in best_sequence:
-                print("card",card)
                 temp_val = card.value 
                 if temp_val not in found_values : 
                     found_values.append(temp_val)
                     filtered.append(card)
             
-            print("filtered: ",filtered)
             best_comb = list(reversed(filtered[-5:]))
-            print("straight:",best_comb)
             tiebreakers = tuple(card.value for card in best_comb)
-            print("tiebreakers",tiebreakers)
             return EvaluatedHand(HandRank.STRAIGHT,best_comb,tiebreakers)
         #----------------------------------------#
         #THREE OF KIND
         if threes_groups:
             best_comb = max(threes_groups,key=lambda x:x[0].value) #can have only one . not necessary to use max function. if there were two we would have full house
             sorted_cards = sorted(self,key=lambda x:x.value,reverse=True) 
-            print("sorted cards",sorted_cards)
             three_rank = best_comb[0].value
-            print("three rank : ",three_rank)
             rest_of_cards = list(filter(lambda x:x.value != three_rank,sorted_cards) )
-            print("rest of cards:",rest_of_cards)
-            print("threes :",best_comb)
             tiebreakers = (three_rank,rest_of_cards[0].value,rest_of_cards[1].value)
-            print("tiebreakers : ",tiebreakers)
             return EvaluatedHand(HandRank.THREE_OF_A_KIND,best_comb,tiebreakers)
         #----------------------------------------#
         # TWO PAIRS
         if twos_groups:
             sorted_cards = sorted(self,key=lambda card:card.value,reverse=True)
-            print("sorted cards:",sorted_cards)
             if len(twos_groups) >= 2 : 
-                print("we have two pairs")
                 sorted_pairs = sorted(twos_groups,key=lambda x:x[0].value,reverse=True)
-                print("sorted:",sorted_pairs)
                 best_comb.append(sorted_pairs[0])
                 best_comb.append(sorted_pairs[1])
                 rank_1 = best_comb[0][0].value
                 rank_2 = best_comb[1][0].value 
                 sorted_rest_cards = list(filter(lambda card:card.value != rank_1 and card.value != rank_2,sorted_cards ))
-                print("sorted rest of cards : ",sorted_rest_cards)
                 tiebreakers = (rank_1,rank_2,sorted_rest_cards[0].value)
-                print("tiebreakers:",tiebreakers)
-
-
-                print("two pairs:",best_comb)
                 return EvaluatedHand(HandRank.TWO_PAIR,best_comb,tiebreakers)
             else:
-                print("we have one pair")
                 best_comb.append(twos_groups[0])
-                print("one pair",best_comb)
                 rank = best_comb[0][0].value
-                print('rank',rank)
                 sorted_rest_cards = list(filter(lambda card:card.value != rank,sorted_cards ))
-                print('sorted rest of cards:',sorted_rest_cards)
                 tiebreakers = (rank,sorted_rest_cards[0].value,sorted_rest_cards[1].value,sorted_rest_cards[2].value)
-                print('tiebreakers',tiebreakers)
                 return EvaluatedHand(HandRank.PAIR,best_comb,tiebreakers)
             
         #----------------------------------------#
         #HIGH CARD
         sorted_cards = sorted(self,key=lambda x:x.value,reverse=True)
-        print("sorted cards",sorted_cards)
         best_comb.append(sorted_cards[0])
-        print('high card:',best_comb)
         tiebreakers = tuple(card.value for card in sorted_cards[:5])
-        print("tiebreakers:",tiebreakers)
         return EvaluatedHand(HandRank.HIGH_CARD,best_comb,tiebreakers)
     
     def __getitem__(self, key):
@@ -306,6 +251,16 @@ class CardCollection:
         result += ']'
         return result
     
+    def __eq__(self,other):
+        if not isinstance(other,CardCollection):
+            return NotImplemented
+        if len(self) != len(other):
+            return False
+        for i,card in enumerate(self):
+            if card != other[i]:
+                return False
+        return True
+    
 class EvaluatedHand:
     def __init__(self,rank:HandRank,cards,tiebreakers:tuple[int, ...]):
         self.rank = rank
@@ -321,6 +276,9 @@ class EvaluatedHand:
         if not isinstance(other,EvaluatedHand):
             return NotImplemented
         return (self.rank.value, self.tiebreakers) > (other.rank.value, other.tiebreakers)
+    
+    def __repr__(self):
+        return f"EvaluatedCard{{rank:{self.rank},\n cards:{self.cards},\n tiebreakers:{self.tiebreakers}}}"
 
 
 
