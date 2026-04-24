@@ -227,6 +227,7 @@ class CardCollection:
         best_comb.append(sorted_cards[0])
         tiebreakers = tuple(card.value for card in sorted_cards[:5])
         return EvaluatedHand(HandRank.HIGH_CARD,best_comb,tiebreakers)
+        
     
     def __getitem__(self, key):
         return self.cards[key]

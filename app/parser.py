@@ -2,6 +2,7 @@ import argparse
 from app.models import Suit,Card,CardCollection
 import re
 
+# TODO: CLEAN LATER VALUES_DICT ETC . CREATE ENUM PARSER ETC AND ADD TO CONSTS
 values_dict = { 
     '2':2,
     '3':3,
@@ -150,9 +151,6 @@ def parse_game_input(args:argparse.Namespace)->dict[str,CardCollection]:
     return parsed
 
 
-    
-    #check if total cards are correct for the total players
-    #check if there is a duplicate card somewhere . i have duplicate check for a single string but i have to check across the players,community cards etc ! 
 
 
 
