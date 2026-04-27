@@ -16,7 +16,14 @@ def main():
     args = parser.parse_args() #parse
 
     parsed = parse_game_input(args)
-    # print("parsed: ",parsed)
+    print("parsed: ",parsed)
+    print("-----------------------")
+    player_cards = parsed['player_cards']
+    community_cards = parsed['community_cards']
+    all_cards = player_cards + community_cards
+    print("all_cards",all_cards)
+    result = all_cards.find_sequences()
+    print('result',result)
     print("-----------------------")
     odds(parsed)
     

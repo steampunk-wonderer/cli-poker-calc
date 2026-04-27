@@ -124,6 +124,27 @@ class TestModels(unittest.TestCase):
         ])]
 
         self.assertEqual(result_5, expected_5)
+
+        
+        test_6 = CardCollection([
+            Card(5,Suit.CLUBS),
+            Card(14,Suit.DIAMONDS),
+            Card(4,Suit.HEARTS),
+            Card(3,Suit.SPADES),
+            Card(2,Suit.HEARTS),
+        ])
+
+        result_6 = test_6.find_sequences()
+
+        expected_6 = [CardCollection([
+            Card(1,Suit.DIAMONDS),
+            Card(2,Suit.HEARTS),
+            Card(3,Suit.SPADES),
+            Card(4,Suit.HEARTS),
+            Card(5,Suit.CLUBS),
+        ])]
+
+        self.assertEqual(result_6, expected_6)
     
     def test_find_best_hand(self):
         #clean_straight_flush

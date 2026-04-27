@@ -30,13 +30,13 @@ class HandRank(Enum):
     
 
 
-    
+# TODO : i changed the values to 1-14 ! i have to change these things in the parser not to allow value of 1 but i think i am ok ! 
 class Card: 
     def __init__(self,value:int,suit:Suit)->None:
         if not isinstance(suit,Suit):
             raise TypeError(f"suit:{suit} must be Suit")
-        if value > 14 or value < 2:
-            raise ValueError(f"value:{value} must be from 2-14")
+        if value > 14 or value < 1:
+            raise ValueError(f"value:{value} must be from 1-14")
         if not isinstance(value,int):
             raise TypeError(f"value:{value} should be an int")
         self.suit = suit
@@ -92,10 +92,20 @@ class CardCollection:
     def find_suit_groups(self):
         return self._find_groups_by_key(lambda x:x.suit)
 
-    def find_sequences(self)->list[list[Card]]:
-        sorted_cards = self.sort_by_value()
+    def append(self,add_card:Card)->"CardCollection":
+        print('type(self.cards)',type(self.cards))
+        print('type([add_card])',type([add_card]))
+        self.cards = self.cards+[add_card]
+        return add_card
+
+    def find_sequences(self)->list["CardCollection"]:
         results = []
         found = []
+        for card in self.cards:
+            if card.value == 14:
+                self.append(Card(1,card.suit))
+        sorted_cards = self.sort_by_value()
+
         for i,card in enumerate(sorted_cards):
             if card in found:
                 continue
@@ -116,7 +126,7 @@ class CardCollection:
                 results.append(CardCollection(temp))
         return results
 
-    def find_best_hand(self):
+    def find_best_hand(self)->"EvaluatedHand":
         best_comb = []
         groups_suits = self.find_suit_groups()
         group_values = self.find_value_groups()
@@ -228,7 +238,6 @@ class CardCollection:
         tiebreakers = tuple(card.value for card in sorted_cards[:5])
         return EvaluatedHand(HandRank.HIGH_CARD,best_comb,tiebreakers)
         
-    
     def __getitem__(self, key):
         return self.cards[key]
 
@@ -277,6 +286,11 @@ class EvaluatedHand:
         if not isinstance(other,EvaluatedHand):
             return NotImplemented
         return (self.rank.value, self.tiebreakers) > (other.rank.value, other.tiebreakers)
+    
+    def __eq__(self,other):
+        if not isinstance(other,EvaluatedHand):
+            return NotImplemented
+        return (self.rank.value, self.tiebreakers) == (other.rank.value, other.tiebreakers)
     
     def __repr__(self):
         return f"EvaluatedCard{{rank:{self.rank},\n cards:{self.cards},\n tiebreakers:{self.tiebreakers}}}"
