@@ -3,28 +3,46 @@ import sys
 import argparse
 from app.odds import odds
 from app.parser import parse_game_input,full_string_to_card_strings,card_string_to_single_Card
+import time 
 
 def main(): 
     #-----------------------------------------------#
     #-----------------------------------------------#
+    start = time.perf_counter()
     #PARSING
     parser = argparse.ArgumentParser() #create parser
     parser.add_argument("--players", type=int,default=2)
     parser.add_argument("--player_cards",type=str,default=None)
     parser.add_argument("--other_players_cards",type=str,nargs="*",default=None)
     parser.add_argument("--community_cards",type=str,default=None)
+    parser.add_argument(
+        "--mode",
+        choices=["auto","exact","monte-carlo"],
+        default="auto"
+    )
+    parser.add_argument(
+        "--simulations",
+        type=int,
+        default=10_000
+    )
+
+
     args = parser.parse_args() #parse
 
+    mode = args.mode
+    simulations = args.simulations
     parsed = parse_game_input(args)
-    player_cards = parsed['player_cards']
-    community_cards = parsed['community_cards']
-    all_cards = player_cards + community_cards
-    result = all_cards.find_sequences()
-    winning_odds = odds(parsed)
+
+    #-----------------------------------------------#
+    #-----------------------------------------------#
+    winning_odds = odds(parsed,mode,simulations)
+
+
+
+
     print("winning odds:",winning_odds)
-    
-    #-----------------------------------------------#
-    #-----------------------------------------------#
+    end = time.perf_counter()
+    print("Duration",end-start)
 
 if __name__ == "__main__": 
     main()

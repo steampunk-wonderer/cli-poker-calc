@@ -34,11 +34,17 @@ def full_string_to_card_strings(full_str:str,no_duplicates=True)->list[str]:
     """
     10s7cQh2cAh -> [10s,7c,Qh,2c,Ah]
     """
-    full_str = full_str.replace(" ","")
 
+    # full_str = full_str.replace(" ","")
+    # TODO: change the monstrosity below
     if not full_str: 
         # raise ValueError(f"Invalid full_str:{full_str}")
         return []
+    full_str = full_str.replace(" ","")
+    if not full_str: 
+        # raise ValueError(f"Invalid full_str:{full_str}")
+        return []
+
     if not isinstance(full_str,str): 
         raise TypeError(f"full_str:{full_str} must be a string got {type(full_str)}")
     
