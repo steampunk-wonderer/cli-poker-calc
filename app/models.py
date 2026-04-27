@@ -93,8 +93,6 @@ class CardCollection:
         return self._find_groups_by_key(lambda x:x.suit)
 
     def append(self,add_card:Card)->"CardCollection":
-        print('type(self.cards)',type(self.cards))
-        print('type([add_card])',type([add_card]))
         self.cards = self.cards+[add_card]
         return add_card
 
@@ -303,7 +301,6 @@ class EvaluatedHand:
 #FUNCTIONS
 def is_flush(card_list:list[Card])->bool:
     s = card_list[0].suit
-    print('s',s)
     for card in card_list[1:]:
         if card.suit != s:
             return False

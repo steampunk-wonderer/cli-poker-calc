@@ -60,7 +60,6 @@ def full_string_to_card_strings(full_str:str,no_duplicates=True)->list[str]:
             raise ValueError("no duplicate cards allowed")
         card_strings.append(card_str)
     
-    # print(card_strings)
     return card_strings
 
 def card_string_to_single_Card(card_string:str)->Card:
