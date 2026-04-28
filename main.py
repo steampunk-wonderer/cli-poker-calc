@@ -4,6 +4,7 @@ import argparse
 from app.odds import odds
 from app.parser import parse_game_input,full_string_to_card_strings,card_string_to_single_Card
 import time 
+from app.utils import pretty_print
 
 def main(): 
     #-----------------------------------------------#
@@ -35,14 +36,24 @@ def main():
 
     #-----------------------------------------------#
     #-----------------------------------------------#
-    winning_odds = odds(parsed,mode,simulations)
+    temp = odds(parsed,mode,simulations)
+    print("temp:",temp)
+    winning_odds = temp["odds"]
+    method = temp["method"]
+    iterations = temp["iterations"]
+    player_points = temp["player_points"]
+    print("player_points:",player_points)
+    total_cases = temp["total_cases"]
 
 
 
 
     print("winning odds:",winning_odds)
+
     end = time.perf_counter()
     print("Duration",end-start)
+    pretty_print(args,method,iterations,winning_odds,player_points,total_cases)
+
 
 if __name__ == "__main__": 
     main()

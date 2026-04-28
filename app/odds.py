@@ -21,14 +21,17 @@ def community_combinations(community_cards:CardCollection,excluded_cards:CardCol
     available_community_slots = 5 - len(community_cards)
 
     community_rest_combinations = [] 
+    method = None
 
     if mode == 'exact':
         community_rest_combinations = [
             CardCollection(list(c))
             for c in combinations(available_cards, available_community_slots)
         ]
+        method = mode
 
     elif mode == 'monte-carlo':
+        method = mode
         if simulations is None:
             simulations = 10_000
 
@@ -40,11 +43,13 @@ def community_combinations(community_cards:CardCollection,excluded_cards:CardCol
         if available_community_slots >= 3:
             if simulations is None:
                 simulations = 10_000
+            method = 'monte-carlo'
 
             for _ in range(simulations):
                 sample = random.sample(available_cards, available_community_slots)
                 community_rest_combinations.append(CardCollection(sample))
         else:
+            method = 'exact'
             community_rest_combinations = [
                 CardCollection(list(c))
                 for c in combinations(available_cards, available_community_slots)
@@ -58,7 +63,11 @@ def community_combinations(community_cards:CardCollection,excluded_cards:CardCol
         for c in community_rest_combinations
     ]
 
-    return community_combinations
+    return {
+        "community_combinations":community_combinations,
+        "method":method,
+        "simulations":simulations
+            }
 
 def find_winner(evaluated_hands:dict[str, EvaluatedHand]):
     best_hand = max(evaluated_hands.values())
@@ -81,27 +90,14 @@ def odds(parsed,mode,simulations=None):
         player_cards_lst.append(t)
         player_points[f"player-{j+1}"] = 0
 
-    
-
     # TODO : maybe change that thing below now that i have player_cards_lst
     all_used_cards = player_cards + CardCollection([card for collection in other_players_cards for card in collection]) + community_cards
 
-
-
-
-
-
-    all_community_combinations = community_combinations(community_cards,all_used_cards,mode,simulations)
-
-
-
-
-
-
-
-
+    temp_result = community_combinations(community_cards,all_used_cards,mode,simulations)
+    all_community_combinations = temp_result["community_combinations"]
+    method = temp_result["method"]
+    iterations = temp_result["simulations"]
     total_cases = len(all_community_combinations)
-
     for community_cards_combination in all_community_combinations:
         evaluated_hands = {}
         for i,c in enumerate(player_cards_lst):
@@ -117,7 +113,13 @@ def odds(parsed,mode,simulations=None):
         for player_name,points in player_points.items()
     }
     print("player-points:",player_points)
-    return odds
+    return {
+        "odds":odds,
+        "method":method,
+        "iterations":iterations,
+        "player_points":player_points,
+        "total_cases":total_cases
+        }
 
 
 
