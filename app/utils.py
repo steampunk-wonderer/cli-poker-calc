@@ -45,7 +45,7 @@ Results:
 ---------------------------""")
     if method == 'exact':
         for i in range(args.players):
-            print(f"   player-{i}: {winning_odds[f"player-{i}"]*100:.2f}% (~{player_points[f"player-{i}"]:.0f} / {total_cases})")
+            print(f"   player-{i}: {winning_odds[f"player-{i}"]*100:.2f}% ({player_points[f"player-{i}"]:.0f} / {total_cases})")
     elif method == 'monte-carlo':
         for i in range(args.players):
             print(
