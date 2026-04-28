@@ -112,7 +112,7 @@ def odds(parsed,mode,simulations=None):
         player_name:points/total_cases
         for player_name,points in player_points.items()
     }
-    print("player-points:",player_points)
+    # print("player-points:",player_points)
     return {
         "odds":odds,
         "method":method,

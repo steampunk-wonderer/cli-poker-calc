@@ -27,8 +27,6 @@ class HandRank(Enum):
     FOUR_OF_A_KIND = 8
     STRAIGHT_FLUSH = 9
 
-    
-
 
 # TODO : i changed the values to 1-14 ! i have to change these things in the parser not to allow value of 1 but i think i am ok ! 
 class Card: 
@@ -128,13 +126,11 @@ class CardCollection:
         best_comb = []
         groups_suits = self.find_suit_groups()
         group_values = self.find_value_groups()
-
         fours_groups = filter_groups(group_values,lambda item:len(item) ,4)
         threes_groups = filter_groups(group_values,lambda item:len(item),3)
         twos_groups = filter_groups(group_values,lambda item:len(item),2)
         suits_count = count_suits(self)
         tiebreakers = tuple()
-
         #----------------------------------------#
         #STRAIGHT FLUSH
         for group_suit in groups_suits:
@@ -292,11 +288,6 @@ class EvaluatedHand:
     
     def __repr__(self):
         return f"EvaluatedCard{{rank:{self.rank},\n cards:{self.cards},\n tiebreakers:{self.tiebreakers}}}"
-
-
-
-
-
 
 #FUNCTIONS
 def is_flush(card_list:list[Card])->bool:

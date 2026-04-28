@@ -17,7 +17,6 @@ def create_full_deck(all_values:list[int],all_suits:list[Suit])->CardCollection:
 
 def pretty_print(args,method,iterations,winning_odds,player_points,total_cases):
     community_cards = args.community_cards
-    print("INSIDE!!! ",player_points)
     mode = args.mode
     print("""===========================
       Poker Odds
@@ -32,7 +31,10 @@ def pretty_print(args,method,iterations,winning_odds,player_points,total_cases):
         print(f"   player-{i} | {players_cards[i]}")
     print('')    
     print("Board:")
-    print(f"   {args.community_cards}")
+    if not community_cards:
+        print("   No community cards")
+    else : 
+        print(f"   {community_cards}")
     print("")
     print("Method:")
     if method == 'monte-carlo':
