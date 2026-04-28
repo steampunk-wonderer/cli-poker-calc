@@ -5,9 +5,25 @@ from app.utils import create_full_deck
 from app.consts import ALL_SUITS, ALL_VALUES
 from itertools import combinations
 import random
+from math import comb
 
 
+def monte_carlo_community_combinations(simulations,max_simulations,available_cards,available_community_slots):
+    community_rest_combinations = []
+    if available_community_slots >= 3:
+        method = 'monte-carlo'
+        if simulations is None:
+            simulations = 10_000
+        if simulations > max_simulations :
+            raise ValueError(f"number of simulations for this cards setup must not exeed {max_simulations}")
+        if simulations < 1:
+            raise ValueError(f"number of simulations must be at least 1")
 
+        for _ in range(simulations):
+            sample = random.sample(available_cards, available_community_slots)
+            community_rest_combinations.append(CardCollection(sample))
+
+    return community_rest_combinations 
 
 # TODO : CREATE FULL DECK ETC SHOULD TAKE FROM A CONSTS FILE    
 
@@ -19,6 +35,11 @@ def community_combinations(community_cards:CardCollection,excluded_cards:CardCol
     available_cards = list(filter(lambda card:card not in excluded_cards,all_cards))
 
     available_community_slots = 5 - len(community_cards)
+
+
+    max_simulations = comb(52-len(community_cards)-len(excluded_cards),available_community_slots)
+    print("MAX SIMULATIONS : ",max_simulations)
+    print("available communit slots:",available_community_slots)
 
     community_rest_combinations = [] 
     method = None
@@ -32,29 +53,18 @@ def community_combinations(community_cards:CardCollection,excluded_cards:CardCol
 
     elif mode == 'monte-carlo':
         method = mode
-        if simulations is None:
-            simulations = 10_000
-
-        for _ in range(simulations):
-            sample = random.sample(available_cards, available_community_slots)
-            community_rest_combinations.append(CardCollection(sample))
+        community_rest_combinations = monte_carlo_community_combinations(simulations,max_simulations,available_cards,available_community_slots)
 
     elif mode == 'auto':
         if available_community_slots >= 3:
-            if simulations is None:
-                simulations = 10_000
             method = 'monte-carlo'
-
-            for _ in range(simulations):
-                sample = random.sample(available_cards, available_community_slots)
-                community_rest_combinations.append(CardCollection(sample))
+            community_rest_combinations = monte_carlo_community_combinations(simulations,max_simulations,available_cards,available_community_slots)
         else:
             method = 'exact'
             community_rest_combinations = [
                 CardCollection(list(c))
                 for c in combinations(available_cards, available_community_slots)
             ]
-
     else:
         raise ValueError(f"Invalid mode: {mode}")
 
@@ -78,6 +88,7 @@ def find_winner(evaluated_hands:dict[str, EvaluatedHand]):
     }
 
 def odds(parsed,mode,simulations=None):
+    print("mode !!!!! : ",mode)
     player_cards = parsed["player_cards"]
     other_players_cards = parsed["other_players_cards"]
     community_cards = parsed["community_cards"]
@@ -98,6 +109,7 @@ def odds(parsed,mode,simulations=None):
     method = temp_result["method"]
     iterations = temp_result["simulations"]
     total_cases = len(all_community_combinations)
+
     for community_cards_combination in all_community_combinations:
         evaluated_hands = {}
         for i,c in enumerate(player_cards_lst):
